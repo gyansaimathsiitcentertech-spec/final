@@ -1,81 +1,369 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Required | Secure Access</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #101828;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc, #e0e7ff);
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: white;
+  padding: 30px;
+  border-radius: 22px;
+  box-shadow: 0 20px 60px #10182818;
+}
+
+.brand {
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #475467;
+}
+
+.lock {
+  margin: 24px 0 16px;
+  text-align: center;
+  padding: 25px 15px;
+  background: #101828;
+  color: white;
+  border-radius: 16px;
+}
+
+.lock-icon {
+  font-size: 42px;
+}
+
+.lock h1 {
+  font-size: 25px;
+  margin: 12px 0;
+}
+
+.lock p {
+  color: #d0d5dd;
+  line-height: 1.6;
+}
+
+.amount {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 12px 0;
+}
+
+.invoice {
+  font-size: 13px;
+  color: #98a2b3;
+}
+
+.muted {
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.section {
+  margin-top: 22px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.upi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 15px;
+  font-weight: bold;
+}
+
+.copy {
+  background: #eef2ff;
+  color: #3538cd;
+  flex-shrink: 0;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  font-size: 15px;
+  outline-color: #635bff;
+}
+
+.primary {
+  width: 100%;
+  margin-top: 13px;
+  background: #4f46e5;
+  color: white;
+  padding: 15px;
+  font-size: 15px;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.notice {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 9px;
+  background: #f2f4f7;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.pay-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #3538cd;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.pay-link:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  text-align: center;
+  color: #98a2b3;
+  font-size: 12px;
+  margin-top: 22px;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 22px;
+  }
+
+  .amount {
+    font-size: 32px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="card">
+
+  <div class="brand">SECURE CLIENT PORTAL</div>
+
+  <section class="lock">
+    <div class="lock-icon">🔒</div>
+
+    <h1>Access Temporarily Locked</h1>
+
+    <p>
+      Your account has an outstanding invoice.
+      Complete payment to request access restoration.
+    </p>
+
+    <div style="font-size:13px;color:#d0d5dd">
+      AMOUNT DUE
+    </div>
+
+    <div class="amount">₹5,000.00</div>
+
+    <div class="invoice">
+      Invoice #INV-2026-001
+    </div>
+  </section>
+
+  <p class="muted">
+    Complete your payment and enter the transaction
+    reference number (UTR) below.
+  </p>
+
+  <div class="section">
+    <label class="label">Pay using UPI</label>
+
+    <div class="upi">
+      <span id="upi">yourbusiness@upi</span>
+      <button class="copy" onclick="copyUPI()">Copy</button>
+    </div>
+
+    <a id="payLink" class="pay-link" href="#">
+      Open UPI payment app
+    </a>
+  </div>
+
+  <div class="section">
+    <label class="label" for="utr">
+      UPI Transaction Reference (UTR)
+    </label>
+
+    <input
+      id="utr"
+      type="text"
+      maxlength="40"
+      placeholder="Enter your transaction reference"
+      autocomplete="off"
+    >
+
+    <button
+      class="primary"
+      id="submitBtn"
+      onclick="submitUTR()"
+    >
+      Submit Payment for Verification
+    </button>
+
+    <div
+      id="status"
+      class="status"
+      role="status"
+      aria-live="polite"
+    ></div>
+  </div>
+
+  <div class="notice">
+    <strong>Important:</strong>
+    The 15-minute countdown is a follow-up timer only.
+    Payment must be verified before access is restored.
+  </div>
+
+  <div class="footer">
+    Secure Client Access · Payment Support
+  </div>
+
+</main>
+
+<script>
+const UPI_ID = "yourbusiness@upi";
+const BUSINESS_NAME = "Your Business";
+const AMOUNT = 5000;
+const INVOICE_ID = "INV-2026-001";
+
 let countdownInterval = null;
 
-async function submitUTR() {
-  const utr = document.getElementById("utr").value.trim();
-  const status = document.getElementById("status");
-  const btn = document.getElementById("submitBtn");
+const utrInput = document.getElementById("utr");
+const statusBox = document.getElementById("status");
+const submitBtn = document.getElementById("submitBtn");
+
+// Configure the UPI payment link.
+document.getElementById("upi").textContent = UPI_ID;
+
+document.getElementById("payLink").href =
+  "upi://pay?pa=" + encodeURIComponent(UPI_ID) +
+  "&pn=" + encodeURIComponent(BUSINESS_NAME) +
+  "&am=" + AMOUNT.toFixed(2) +
+  "&cu=INR" +
+  "&tn=" + encodeURIComponent(INVOICE_ID);
+
+async function copyUPI() {
+  try {
+    await navigator.clipboard.writeText(UPI_ID);
+    statusBox.style.color = "#027a48";
+    statusBox.textContent = "UPI ID copied successfully.";
+  } catch (error) {
+    statusBox.style.color = "#344054";
+    statusBox.textContent =
+      "Please copy this UPI ID manually: " + UPI_ID;
+  }
+}
+
+function startCountdown() {
+  clearInterval(countdownInterval);
+
+  let remaining = 15 * 60;
+
+  submitBtn.disabled = true;
+
+  function updateCountdown() {
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining % 60;
+
+    const formattedTime =
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(seconds).padStart(2, "0");
+
+    if (remaining > 0) {
+      statusBox.style.color = "#344054";
+
+      statusBox.textContent =
+        "UTR submitted in this demo. Follow-up countdown: " +
+        formattedTime +
+        ". Payment is still awaiting verification.";
+
+      remaining--;
+    } else {
+      clearInterval(countdownInterval);
+
+      statusBox.style.color = "#b54708";
+      statusBox.textContent =
+        "15 minutes elapsed. Your payment is still pending. " +
+        "Please contact payment support.";
+
+      submitBtn.disabled = false;
+    }
+  }
+
+  updateCountdown();
+  countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+function submitUTR() {
+  const utr = utrInput.value.trim();
 
   if (!/^[A-Za-z0-9]{8,40}$/.test(utr)) {
-    status.style.color = "#b42318";
-    status.textContent = "Please enter a valid transaction reference.";
+    statusBox.style.color = "#b42318";
+    statusBox.textContent =
+      "Enter a valid UTR containing 8–40 letters or numbers.";
     return;
   }
 
-  btn.disabled = true;
-  status.style.color = "#344054";
-  status.textContent = "Submitting your UTR...";
+  // Demo only: this does not send the UTR to a server.
+  statusBox.style.color = "#344054";
+  statusBox.textContent =
+    "Demo submission accepted in this browser. " +
+    "No actual payment verification has occurred.";
 
-  try {
-    const response = await fetch("/api/payment/submit-utr", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
-      body: JSON.stringify({
-        invoiceId: "INV-2026-001",
-        utr: utr
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Submission failed");
-    }
-
-    const result = await response.json();
-
-    if (result.status === "verified") {
-      status.style.color = "#027a48";
-      status.textContent = "Payment verified. Access is being restored.";
-      location.reload();
-      return;
-    }
-
-    status.style.color = "#344054";
-    let remaining = 15 * 60;
-
-    if (countdownInterval) {
-      clearInterval(countdownInterval);
-    }
-
-    function updateCountdown() {
-      const minutes = Math.floor(remaining / 60);
-      const seconds = remaining % 60;
-
-      status.textContent =
-        "UTR submitted. Awaiting admin verification. " +
-        "Follow-up timer: " +
-        String(minutes).padStart(2, "0") + ":" +
-        String(seconds).padStart(2, "0");
-
-      if (remaining <= 0) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-        status.textContent =
-          "Verification is still pending. Please contact payment support.";
-        btn.disabled = false;
-        return;
-      }
-
-      remaining--;
-    }
-
-    updateCountdown();
-    countdownInterval = setInterval(updateCountdown, 1000);
-
-  } catch (error) {
-    status.style.color = "#b42318";
-    status.textContent =
-      "Unable to submit your UTR. Please try again.";
-    btn.disabled = false;
-  }
+  startCountdown();
 }
+</script>
+
+</body>
+</html>
