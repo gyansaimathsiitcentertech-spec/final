@@ -1,431 +1,124 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Payment Required | Secure Access</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  color: #101828;
-  background: linear-gradient(135deg, #eef2ff, #f8fafc, #e0e7ff);
-}
-
-.card {
-  width: 100%;
-  max-width: 460px;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 22px;
-  box-shadow: 0 20px 60px #10182818;
-}
-
-.brand {
-  font-size: 13px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  color: #475467;
-}
-
-.lock {
-  margin: 24px 0 16px;
-  text-align: center;
-  padding: 25px 15px;
-  background: #101828;
-  color: #ffffff;
-  border-radius: 16px;
-}
-
-.lock-icon {
-  font-size: 42px;
-}
-
-.lock h1 {
-  font-size: 25px;
-  margin: 12px 0;
-}
-
-.lock p {
-  color: #d0d5dd;
-  line-height: 1.6;
-}
-
-.amount {
-  font-size: 36px;
-  font-weight: 800;
-  margin: 12px 0;
-}
-
-.invoice {
-  font-size: 13px;
-  color: #98a2b3;
-}
-
-.muted {
-  color: #667085;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.section {
-  margin-top: 22px;
-}
-
-.label {
-  font-size: 13px;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.upi {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 13px;
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
-  overflow-wrap: anywhere;
-}
-
-#upi {
-  overflow-wrap: anywhere;
-  font-weight: bold;
-}
-
-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 9px;
-  padding: 12px 15px;
-  font-weight: bold;
-}
-
-.copy {
-  background: #eef2ff;
-  color: #3538cd;
-  flex-shrink: 0;
-}
-
-input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
-  font-size: 15px;
-  outline-color: #635bff;
-}
-
-.primary {
-  width: 100%;
-  margin-top: 13px;
-  background: #4f46e5;
-  color: #ffffff;
-  padding: 15px;
-  font-size: 15px;
-}
-
-.primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.pay-link {
-  display: block;
-  text-align: center;
-  margin-top: 14px;
-  padding: 14px;
-  border-radius: 10px;
-  background: #16a34a;
-  color: #ffffff;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.pay-link:hover {
-  background: #15803d;
-}
-
-.notice {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 9px;
-  background: #f2f4f7;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.status {
-  margin-top: 12px;
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
-.footer {
-  text-align: center;
-  color: #98a2b3;
-  font-size: 12px;
-  margin-top: 22px;
-}
-
-@media (max-width: 480px) {
-  .card {
-    padding: 22px;
-  }
-
-  .amount {
-    font-size: 32px;
-  }
-
-  .lock h1 {
-    font-size: 22px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<main class="card">
-
-  <div class="brand">SECURE CLIENT PORTAL</div>
-
-  <section class="lock">
-
-    <div class="lock-icon">🔒</div>
-
-    <h1>Access Temporarily Locked</h1>
-
-    <p>
-      Your account has an outstanding invoice.
-      Complete the payment to request access restoration.
-    </p>
-
-    <div style="font-size:13px;color:#d0d5dd">
-      AMOUNT DUE
-    </div>
-
-    <div class="amount" id="amount">₹5,000.00</div>
-
-    <div class="invoice">
-      Invoice #<span id="invoice">INV-2026-001</span>
-    </div>
-
-  </section>
-
-  <p class="muted">
-    Complete the payment using UPI and enter your transaction
-    reference number (UTR) below.
-  </p>
-
-  <div class="section">
-
-    <label class="label">Pay using UPI</label>
-
-    <div class="upi">
-      <span id="upi">7620156795-8@ybl</span>
-
-      <button
-        class="copy"
-        type="button"
-        onclick="copyUPI()">
-        Copy UPI
-      </button>
-    </div>
-
-    <a
-      id="payLink"
-      class="pay-link"
-      href="#"
-      onclick="return openPaymentApp(event)">
-      Pay ₹5,000 using UPI
-    </a>
-
-  </div>
-
-  <div class="section">
-
-    <label class="label" for="utr">
-      UPI Transaction Reference (UTR)
-    </label>
-
-    <input
-      id="utr"
-      type="text"
-      maxlength="40"
-      placeholder="Enter your transaction reference"
-      autocomplete="off"
-      spellcheck="false">
-
-    <button
-      class="primary"
-      id="submitBtn"
-      type="button"
-      onclick="submitUTR()">
-      Submit Payment for Verification
-    </button>
-
-    <div
-      id="status"
-      class="status"
-      role="status"
-      aria-live="polite">
-    </div>
-
-  </div>
-
-  <div class="notice">
-    <strong>Important:</strong>
-    Submitting a UTR does not confirm payment.
-    The 15-minute countdown is only a follow-up timer.
-    Actual access restoration requires payment verification.
-  </div>
-
-  <div class="footer">
-    Secure Client Access · Payment Support
-  </div>
-
-</main>
-
-<script>
-/* PAYMENT SETTINGS */
-const UPI_ID = "7620156795-8@ybl";
-const BUSINESS_NAME = "Your Business";
-const AMOUNT = 5000;
-const INVOICE_ID = "INV-2026-001";
-
-let countdownInterval = null;
-
-const upiElement = document.getElementById("upi");
-const statusBox = document.getElementById("status");
-const utrInput = document.getElementById("utr");
-const submitBtn = document.getElementById("submitBtn");
-
-/* SHOW UPI ID */
-upiElement.textContent = UPI_ID;
-
-/* CREATE UPI PAYMENT LINK */
-const upiPaymentURL =
-  "upi://pay" +
-  "?pa=" + encodeURIComponent(UPI_ID) +
-  "&pn=" + encodeURIComponent(BUSINESS_NAME) +
-  "&am=" + encodeURIComponent(AMOUNT.toFixed(2)) +
-  "&cu=INR" +
-  "&tn=" + encodeURIComponent(INVOICE_ID);
-
-document.getElementById("payLink").href = upiPaymentURL;
-
-/* COPY UPI ID */
-async function copyUPI() {
-  try {
-    await navigator.clipboard.writeText(UPI_ID);
-
-    statusBox.style.color = "#027a48";
-    statusBox.textContent = "UPI ID copied successfully.";
-
-  } catch (error) {
-    statusBox.style.color = "#344054";
-    statusBox.textContent =
-      "Copy this UPI ID manually: " + UPI_ID;
-  }
-}
-
-/* OPEN UPI PAYMENT APP */
-function openPaymentApp(event) {
-  event.preventDefault();
-
-  window.location.href = upiPaymentURL;
-
-  statusBox.style.color = "#344054";
-  statusBox.textContent =
-    "If your UPI app opens, complete the payment there. " +
-    "Return here afterward to submit your UTR.";
-
-  return false;
-}
-
-/* 15-MINUTE COUNTDOWN */
-function startCountdown() {
-  clearInterval(countdownInterval);
-
-  let remaining = 15 * 60;
-
-  submitBtn.disabled = true;
-
-  function updateCountdown() {
-    const minutes = Math.floor(remaining / 60);
-    const seconds = remaining % 60;
-
-    const formattedTime =
-      String(minutes).padStart(2, "0") +
-      ":" +
-      String(seconds).padStart(2, "0");
-
-    if (remaining > 0) {
-      statusBox.style.color = "#344054";
-
-      statusBox.textContent =
-        "UTR submitted in this demo. Follow-up countdown: " +
-        formattedTime +
-        ". Payment verification is still pending.";
-
-      remaining--;
-
-    } else {
-      clearInterval(countdownInterval);
-
-      statusBox.style.color = "#b54708";
-
-      statusBox.textContent =
-        "15 minutes elapsed. Payment remains unverified. " +
-        "Please contact payment support if needed.";
-
-      submitBtn.disabled = false;
-    }
-  }
-
-  updateCountdown();
-
-  countdownInterval = setInterval(updateCountdown, 1000);
-}
-
-/* SUBMIT UTR — FRONTEND DEMO ONLY */
-function submitUTR() {
-  const utr = utrInput.value.trim();
-
-  if (!/^[A-Za-z0-9]{8,40}$/.test(utr)) {
-    statusBox.style.color = "#b42318";
-
-    statusBox.textContent =
-      "Please enter a valid UTR containing 8–40 letters or numbers.";
-
-    utrInput.focus();
-    return;
-  }
-
-  statusBox.style.color = "#344054";
-
-  statusBox.textContent =
-    "Demo only: the UTR has not been sent to a server " +
-    "or verified against a payment.";
-
-  startCountdown();
-}
-</script>
-
-</body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>IIT Test Portal — Redirect</title>
+		<meta http-equiv="refresh" content="5;url=https://iit-test-portal.preview.emergentagent.com/">
+		<!-- SEO: description, keywords, canonical, Open Graph -->
+		<meta name="description" content="IIT Test Portal — secure online exam platform for IIT and JEE assessments. Take proctored mock tests, practice sample papers, and get instant results.">
+		<meta name="keywords" content="IIT Test Portal, JEE Test Portal, JEE Online Test Portal, JEE Mock Test, JEE Online Mock Test, JEE Mathematics Test, JEE Maths Test Series, IIT JEE Test Series, IIT JEE Online Test, JEE Practice Test, JEE Online Practice Tests, JEE Main Mock Test, JEE Main Online Test, JEE Main Test Series, JEE Main Maths Mock Test, JEE Main Mathematics Test, JEE Main Practice Test, JEE Main Chapter Wise Test, JEE Main PYQ Test, JEE Main Mathematics PYQ, JEE Advanced Mock Test, JEE Advanced Online Test, JEE Advanced Test Series, JEE Advanced Mathematics Test, JEE Advanced Maths Practice, JEE Advanced PYQ, JEE Advanced Chapter Wise Test, Mathematics Test Portal, Online Mathematics Test, Online Maths Test Series, Maths Mock Test, Mathematics Mock Test, Maths Online Test, Mathematics Online Test, Maths Practice Test, Mathematics Practice Test, Maths Test Series, Mathematics Test Series, Chapter Wise JEE Test, Chapter Wise Maths Test, Topic Wise JEE Test, JEE Practice Questions, JEE Previous Year Questions, JEE PYQ Practice, JEE Test Analysis, JEE Mock Test Analysis, JEE Performance Analysis, Student Performance Analysis, Online Exam Analytics, MHT CET Mock Test, MHT CET Maths Mock Test, MHT CET Mathematics Test, MHT CET Online Test, MHT CET Test Series, MHT CET Maths Test Series, MHT CET Chapter Wise Test, MHT CET PYQ Test, JEE Mock Test Aurangabad, JEE Online Test Aurangabad, JEE Maths Test Aurangabad, JEE Test Series Aurangabad, JEE Mock Test Chhatrapati Sambhajinagar, JEE Online Test Chhatrapati Sambhajinagar, JEE Maths Test Chhatrapati Sambhajinagar, Maths Test Series Chhatrapati Sambhajinagar, GYANSAI Maths IIT Center">
+		<meta name="robots" content="index,follow">
+		<link rel="canonical" href="https://iit-test-portal.preview.emergentagent.com/">
+		<meta property="og:title" content="IIT Test Portal — Secure Online Exams">
+		<meta property="og:description" content="IIT Test Portal — secure online exam platform for IIT and JEE assessments. Take proctored mock tests, practice sample papers, and get instant results.">
+		<meta property="og:url" content="https://iit-test-portal.preview.emergentagent.com/">
+		<meta property="og:type" content="website">
+		<meta property="og:image" content="https://via.placeholder.com/1200x630?text=IIT+Test+Portal">
+		<script type="application/ld+json">
+		{
+		  "@context": "https://schema.org",
+		  "@type": "Organization",
+		  "name": "IIT Test Portal",
+		  "url": "https://iit-test-portal.preview.emergentagent.com/",
+		  "logo": "https://via.placeholder.com/600x60?text=IIT+Logo",
+		"description": "IIT Test Portal — secure online exam platform for IIT and JEE assessments. Take proctored mock tests, practice sample papers, and get instant results."
+		}
+		</script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+		<style>
+			:root{--bg1:#f3f6fb;--bg2:#eef4fb;--card:#ffffff;--muted:#6b7280;--accent:#0b6cff}
+			*{box-sizing:border-box}
+			html,body{height:100%}
+			body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;display:flex;align-items:center;justify-content:center;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#0f172a}
+			.wrap{width:100%;max-width:980px;padding:28px}
+			.card{display:grid;grid-template-columns:1fr 360px;gap:28px;background:var(--card);border-radius:12px;padding:26px;box-shadow:0 10px 30px rgba(15,23,42,0.08);align-items:start}
+			.hero{display:flex;flex-direction:column;gap:12px}
+			.brand{display:flex;align-items:center;gap:12px}
+			.logo{width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f8bff);color:#fff;font-weight:700;font-size:18px}
+			h1{font-size:20px;margin:0;color:#071033}
+			.subtitle{color:var(--muted);font-size:14px;margin:0}
+			#info{background:#f8fafc;padding:12px;border-radius:8px;margin-top:8px;color:#111;min-height:56px}
+			.countdown{margin-top:14px;display:flex;align-items:center;gap:12px}
+			.count{font-weight:700;color:var(--accent);font-size:18px}
+			.btn{display:inline-block;padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:600}
+			.side{background:linear-gradient(180deg,#fbfdff,#f7f9ff);padding:18px;border-radius:10px}
+			.how{margin:0;padding:0;list-style:none;color:#0b1220}
+			.how li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(11,17,32,0.04)}
+			.how li:last-child{border-bottom:0}
+			.step{width:36px;height:36px;background:#fff;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(11,17,32,0.06);font-weight:700;color:var(--accent)}
+			.muted{color:var(--muted);font-size:13px}
+			@media (max-width:880px){.card{grid-template-columns:1fr;}.side{order:2}.hero{order:1}}
+		</style>
+		<script>
+			const targetUrl = 'https://iit-test-portal.preview.emergentagent.com/';
+			async function loadInfo(){
+				const infoEl = document.getElementById('info');
+				infoEl.textContent = 'Loading information…';
+				try{
+					const resp = await fetch(targetUrl, {mode: 'cors'});
+					const text = await resp.text();
+					const doc = new DOMParser().parseFromString(text, 'text/html');
+					const title = doc.querySelector('title')?.innerText?.trim();
+					const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim();
+					let excerpt = metaDesc || doc.body?.innerText?.trim()?.replace(/\s+/g,' ')?.slice(0,260);
+					infoEl.innerHTML = '';
+					if(title){
+						const t = document.createElement('div'); t.style.fontWeight='600'; t.textContent = title; infoEl.appendChild(t);
+					}
+					if(excerpt){
+						const p = document.createElement('div'); p.style.marginTop='8px'; p.className='muted'; p.textContent = excerpt + (doc.body.innerText.length>260? '…':''); infoEl.appendChild(p);
+					}
+					if(!title && !excerpt) infoEl.textContent = 'No readable information found (CORS may prevent fetching).';
+				}catch(err){
+					infoEl.textContent = 'Unable to fetch remote info (CORS or network).';
+				}
+			}
+
+			function startCountdown(seconds){
+				const countEl = document.getElementById('count');
+				let remaining = seconds;
+				countEl.textContent = remaining;
+				const timer = setInterval(()=>{
+					remaining -= 1; countEl.textContent = remaining;
+					if(remaining <= 0){ clearInterval(timer); window.location.href = targetUrl; }
+				}, 1000);
+			}
+
+			window.addEventListener('DOMContentLoaded', ()=>{ loadInfo(); startCountdown(5); setTimeout(()=>{ window.location.href = targetUrl; }, 5000); });
+		</script>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="card">
+				<div class="hero">
+					<div class="brand">
+						<div class="logo">IIT</div>
+						<div>
+							<h1>Opening IIT Test Portal</h1>
+							<p class="subtitle">Redirecting you securely to the test portal — automatic in <span id="count" class="count">5</span>s.</p>
+						</div>
+					</div>
+
+					<div id="info">Loading information…</div>
+
+					<div class="countdown">
+						<a id="direct" class="btn" href="https://iit-test-portal.preview.emergentagent.com/">Open now</a>
+						<div class="muted">If nothing happens, use the button or the link will open automatically.</div>
+					</div>
+				</div>
+
+				<aside class="side">
+					<h3 style="margin:0 0 10px 0">How the Test Portal Works</h3>
+					<ol class="how">
+						<li><div class="step">1</div><div><strong>Login</strong><div class="muted">Use your institution credentials to access your dashboard.</div></div></li>
+						<li><div class="step">2</div><div><strong>Select Exam</strong><div class="muted">Pick the scheduled assessment from your active tests.</div></div></li>
+						<li><div class="step">3</div><div><strong>Review Rules</strong><div class="muted">Check allowed materials, time limits, and honor code.</div></div></li>
+						<li><div class="step">4</div><div><strong>Start Test</strong><div class="muted">Timer begins; questions autosave regularly.</div></div></li>
+						<li><div class="step">5</div><div><strong>Submit</strong><div class="muted">Submit answers when finished; confirmation appears on screen.</div></div></li>
+					</ol>
+				</aside>
+			</div>
+		</div>
+	</body>
 </html>
