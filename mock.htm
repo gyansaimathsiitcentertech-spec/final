@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Payment Required | Secure Access</title>
 
 <style>
@@ -24,7 +26,7 @@ body {
 .card {
   width: 100%;
   max-width: 460px;
-  background: white;
+  background: #ffffff;
   padding: 30px;
   border-radius: 22px;
   box-shadow: 0 20px 60px #10182818;
@@ -42,7 +44,7 @@ body {
   text-align: center;
   padding: 25px 15px;
   background: #101828;
-  color: white;
+  color: #ffffff;
   border-radius: 16px;
 }
 
@@ -99,6 +101,11 @@ body {
   overflow-wrap: anywhere;
 }
 
+#upi {
+  overflow-wrap: anywhere;
+  font-weight: bold;
+}
+
 button {
   cursor: pointer;
   border: 0;
@@ -126,7 +133,7 @@ input {
   width: 100%;
   margin-top: 13px;
   background: #4f46e5;
-  color: white;
+  color: #ffffff;
   padding: 15px;
   font-size: 15px;
 }
@@ -136,13 +143,29 @@ input {
   cursor: not-allowed;
 }
 
+.pay-link {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #16a34a;
+  color: #ffffff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.pay-link:hover {
+  background: #15803d;
+}
+
 .notice {
   margin-top: 15px;
   padding: 12px;
   border-radius: 9px;
   background: #f2f4f7;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .status {
@@ -150,18 +173,6 @@ input {
   font-size: 14px;
   line-height: 1.6;
   overflow-wrap: anywhere;
-}
-
-.pay-link {
-  display: inline-block;
-  margin-top: 12px;
-  color: #3538cd;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.pay-link:hover {
-  text-decoration: underline;
 }
 
 .footer {
@@ -179,6 +190,10 @@ input {
   .amount {
     font-size: 32px;
   }
+
+  .lock h1 {
+    font-size: 22px;
+  }
 }
 </style>
 </head>
@@ -190,45 +205,60 @@ input {
   <div class="brand">SECURE CLIENT PORTAL</div>
 
   <section class="lock">
+
     <div class="lock-icon">🔒</div>
 
     <h1>Access Temporarily Locked</h1>
 
     <p>
       Your account has an outstanding invoice.
-      Complete payment to request access restoration.
+      Complete the payment to request access restoration.
     </p>
 
     <div style="font-size:13px;color:#d0d5dd">
       AMOUNT DUE
     </div>
 
-    <div class="amount">₹5,000.00</div>
+    <div class="amount" id="amount">₹5,000.00</div>
 
     <div class="invoice">
-      Invoice #INV-2026-001
+      Invoice #<span id="invoice">INV-2026-001</span>
     </div>
+
   </section>
 
   <p class="muted">
-    Complete your payment and enter the transaction
+    Complete the payment using UPI and enter your transaction
     reference number (UTR) below.
   </p>
 
   <div class="section">
+
     <label class="label">Pay using UPI</label>
 
     <div class="upi">
-      <span id="upi">762015675-8@ybl</span>
-      <button class="copy" onclick="copyUPI()">Copy</button>
+      <span id="upi">7620156795-8@ybl</span>
+
+      <button
+        class="copy"
+        type="button"
+        onclick="copyUPI()">
+        Copy UPI
+      </button>
     </div>
 
-    <a id="payLink" class="pay-link" href="#">
-      Open UPI payment app
+    <a
+      id="payLink"
+      class="pay-link"
+      href="#"
+      onclick="return openPaymentApp(event)">
+      Pay ₹5,000 using UPI
     </a>
+
   </div>
 
   <div class="section">
+
     <label class="label" for="utr">
       UPI Transaction Reference (UTR)
     </label>
@@ -239,13 +269,13 @@ input {
       maxlength="40"
       placeholder="Enter your transaction reference"
       autocomplete="off"
-    >
+      spellcheck="false">
 
     <button
       class="primary"
       id="submitBtn"
-      onclick="submitUTR()"
-    >
+      type="button"
+      onclick="submitUTR()">
       Submit Payment for Verification
     </button>
 
@@ -253,14 +283,16 @@ input {
       id="status"
       class="status"
       role="status"
-      aria-live="polite"
-    ></div>
+      aria-live="polite">
+    </div>
+
   </div>
 
   <div class="notice">
     <strong>Important:</strong>
-    The 15-minute countdown is a follow-up timer only.
-    Payment must be verified before access is restored.
+    Submitting a UTR does not confirm payment.
+    The 15-minute countdown is only a follow-up timer.
+    Actual access restoration requires payment verification.
   </div>
 
   <div class="footer">
@@ -270,39 +302,63 @@ input {
 </main>
 
 <script>
-const UPI_ID = "yourbusiness@upi";
+/* PAYMENT SETTINGS */
+const UPI_ID = "7620156795-8@ybl";
 const BUSINESS_NAME = "Your Business";
 const AMOUNT = 5000;
 const INVOICE_ID = "INV-2026-001";
 
 let countdownInterval = null;
 
-const utrInput = document.getElementById("utr");
+const upiElement = document.getElementById("upi");
 const statusBox = document.getElementById("status");
+const utrInput = document.getElementById("utr");
 const submitBtn = document.getElementById("submitBtn");
 
-// Configure the UPI payment link.
-document.getElementById("upi").textContent = UPI_ID;
+/* SHOW UPI ID */
+upiElement.textContent = UPI_ID;
 
-document.getElementById("payLink").href =
-  "upi://pay?pa=" + encodeURIComponent(UPI_ID) +
+/* CREATE UPI PAYMENT LINK */
+const upiPaymentURL =
+  "upi://pay" +
+  "?pa=" + encodeURIComponent(UPI_ID) +
   "&pn=" + encodeURIComponent(BUSINESS_NAME) +
-  "&am=" + AMOUNT.toFixed(2) +
+  "&am=" + encodeURIComponent(AMOUNT.toFixed(2)) +
   "&cu=INR" +
   "&tn=" + encodeURIComponent(INVOICE_ID);
 
+document.getElementById("payLink").href = upiPaymentURL;
+
+/* COPY UPI ID */
 async function copyUPI() {
   try {
     await navigator.clipboard.writeText(UPI_ID);
+
     statusBox.style.color = "#027a48";
     statusBox.textContent = "UPI ID copied successfully.";
+
   } catch (error) {
     statusBox.style.color = "#344054";
     statusBox.textContent =
-      "Please copy this UPI ID manually: " + UPI_ID;
+      "Copy this UPI ID manually: " + UPI_ID;
   }
 }
 
+/* OPEN UPI PAYMENT APP */
+function openPaymentApp(event) {
+  event.preventDefault();
+
+  window.location.href = upiPaymentURL;
+
+  statusBox.style.color = "#344054";
+  statusBox.textContent =
+    "If your UPI app opens, complete the payment there. " +
+    "Return here afterward to submit your UTR.";
+
+  return false;
+}
+
+/* 15-MINUTE COUNTDOWN */
 function startCountdown() {
   clearInterval(countdownInterval);
 
@@ -325,40 +381,47 @@ function startCountdown() {
       statusBox.textContent =
         "UTR submitted in this demo. Follow-up countdown: " +
         formattedTime +
-        ". Payment is still awaiting verification.";
+        ". Payment verification is still pending.";
 
       remaining--;
+
     } else {
       clearInterval(countdownInterval);
 
       statusBox.style.color = "#b54708";
+
       statusBox.textContent =
-        "15 minutes elapsed. Your payment is still pending. " +
-        "Please contact payment support.";
+        "15 minutes elapsed. Payment remains unverified. " +
+        "Please contact payment support if needed.";
 
       submitBtn.disabled = false;
     }
   }
 
   updateCountdown();
+
   countdownInterval = setInterval(updateCountdown, 1000);
 }
 
+/* SUBMIT UTR — FRONTEND DEMO ONLY */
 function submitUTR() {
   const utr = utrInput.value.trim();
 
   if (!/^[A-Za-z0-9]{8,40}$/.test(utr)) {
     statusBox.style.color = "#b42318";
+
     statusBox.textContent =
-      "Enter a valid UTR containing 8–40 letters or numbers.";
+      "Please enter a valid UTR containing 8–40 letters or numbers.";
+
+    utrInput.focus();
     return;
   }
 
-  // Demo only: this does not send the UTR to a server.
   statusBox.style.color = "#344054";
+
   statusBox.textContent =
-    "Demo submission accepted in this browser. " +
-    "No actual payment verification has occurred.";
+    "Demo only: the UTR has not been sent to a server " +
+    "or verified against a payment.";
 
   startCountdown();
 }
